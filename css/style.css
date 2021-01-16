@@ -1,0 +1,90 @@
+#colors {
+    /* https://coolors.co/083d77-ebebd3-f4d35e-ee964b-f95738 */
+    color: #083d77;
+    color: #ebebd3;
+    color: #f4d35e;
+    color: #ee964b;
+    color: #f95738;
+}
+
+.btn-primary {
+    background-color: #083d77;
+    border: #083d77;
+}
+
+.btn-danger {
+    background-color: #f95738;
+}
+#footer {
+    text-align: center;
+}
+
+#header {
+    background-color: #083d77;
+    color: #f4d35e;
+    font-weight: bold;
+    padding: 6px;
+    height: 50px;
+    font-size: 18pt;
+}
+
+#submit_post {
+    width: 200px;
+    margin-top: 1.0em;
+    margin-bottom: 2.0em;
+}
+
+.feed_post {
+    border: solid 1px #083d77;
+    margin-bottom: 1.0em;
+}
+
+.feed_post .author_time {
+    background-color: #083d77;
+    color: #fff;
+    height: 3.0em;
+}
+
+.feed_post .author {
+    padding: 1.0em;
+}
+
+.feed_post .created_at {
+    float: right;
+    padding: 1.0em;
+}
+
+.feed_post .content {
+    padding: 1.0em;
+    min-height: 6.0em;
+}
+
+.feed_post .post-link {
+
+}
+
+.feed_post .post-image img {
+    max-width: 100%;
+}
+
+.user_key {
+    cursor: pointer;
+    border: solid 1px #083d77;
+    padding: 0.5em;
+    margin: 0.25em;
+}
+
+.user_key_delete {
+    margin-right: 0.5em;
+}
+
+.friend {
+    cursor: pointer;
+    border: solid 1px #083d77;
+    padding: 0.5em;
+    margin: 0.25em;
+}
+
+.user_friend_delete {
+    margin-right: 0.5em;
+}
