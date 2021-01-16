@@ -38,7 +38,6 @@
     <?php echo $PAGE_HTML ?? ''; ?>
 </div>
 <div id="footer">
-    &copy; Copyright <?php echo date('Y'); ?> <?php echo META_TITLE; ?>
 </div>
 
 
