@@ -66,7 +66,7 @@ class CurlHeader
                     $this->Location = $v;
                     break;
                 default:
-                    continue;
+                    break;
             }
         }
     }
