@@ -34,7 +34,7 @@
         <div class="float-right btn btn-danger" style="margin-right: 1.0em;" id="my_feed">My Feed</div>
         <div class="float-right btn btn-danger" style="margin-right: 1.0em;" id="my_account">My Account</div>
     <?php } ?>
-    <span class="title"><img src="/android-chrome-144x144.png" style="width: 50px; margin-right: 0.5em;" alt="fancy cat" title="fancy cat" />PompousRumpus.com</span>
+    <span class="title"><img src="/android-chrome-144x144.png" style="width: 50px; margin-right: 0.5em;" alt="fancy cat" title="fancy cat" /><?php echo META_TITLE; ?></span>
 </div>
 <div id="content">
     <?php echo $PAGE_HTML ?? ''; ?>
