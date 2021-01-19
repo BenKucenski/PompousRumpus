@@ -3,6 +3,10 @@ function boot() {
     LoadFriends();
     LoadFeed();
 
+    $('#my_account').click(function() {
+        window.location = '/account';
+    });
+
     $('#signout').click(function() {
         HTTP.Post('/api/signout', {
         }, function (data) {

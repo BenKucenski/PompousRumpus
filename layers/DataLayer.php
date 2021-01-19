@@ -135,6 +135,86 @@ class DataLayer
         return $return['data'];
     }
 
+    public function ChangeUsername($user_id, $username)
+    {
+        $sql = '
+            SELECT
+                user_id
+            FROM
+                user 
+            WHERE username = {{username}}
+                AND user_id <> {{user_id}}
+        ';
+        $res = $this->Query($sql, [
+            'username' => $username,
+            'user_id' => $user_id,
+        ]);
+        if (sizeof($res['data'])) {
+            return 'Invalid Username';
+        }
+
+        $sql = '
+            UPDATE
+                user 
+            SET 
+                username = {{username}}
+            WHERE
+                user_id = {{user_id}}
+        ';
+        $res = $this->Execute($sql, [
+            'user_id' => $user_id,
+            'username' => $username,
+        ]);
+        if ($res['error']) {
+            return 'Could not update username';
+        }
+        $_SESSION['username'] = $username;
+        return 0;
+    }
+
+    public function ChangePassword($user_id, $password)
+    {
+        $sql = '
+            UPDATE
+                user 
+            SET 
+                password = {{password}}
+            WHERE
+                user_id = {{user_id}}
+        ';
+        $res = $this->Execute($sql, [
+            'user_id' => $user_id,
+            'password' => hash('sha256', $password),
+        ]);
+        if ($res['error']) {
+            return 2;
+        }
+        return 0;
+    }
+
+    public function ChangeGUID($user_id)
+    {
+        $sql = '
+            UPDATE
+                user 
+            SET 
+                guid = {{guid}}
+            WHERE
+                user_id = {{user_id}}
+        ';
+        $guid = GUID();
+        $res = $this->Execute($sql, [
+            'user_id' => $user_id,
+            'guid' => $guid,
+            ]);
+        if ($res['error']) {
+            return 'GUID could not be changed';
+        }
+        $_SESSION['user_guid'] = $guid;
+        return 0;
+    }
+
+
     /**
      * @param $username
      * @param $password
@@ -184,7 +264,8 @@ class DataLayer
     {
         $sql = '
             SELECT
-                user_id
+                user_id,
+               guid
             FROM
                 user 
             WHERE 
@@ -196,6 +277,7 @@ class DataLayer
             'password' => hash('sha256', $password),
         ]);
         if (sizeof($res['data'])) {
+            $_SESSION['user_guid'] = $res['data'][0]['guid'];
             return (int)$res['data'][0]['user_id'];
         }
         return 0;

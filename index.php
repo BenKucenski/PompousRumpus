@@ -36,9 +36,19 @@ if(substr($path, 0, strlen('/api')) === '/api')
 $_SESSION['user_id'] = $_SESSION['user_id'] ?? 0;
 $_SESSION['hour_offset'] = $_SESSION['hour_offset'] ?? 0;
 
+$path = explode('?', $_SERVER['REQUEST_URI'])[0];
+$root = explode('/', $path)[1];
+
+
 ob_start();
 if($_SESSION['user_id']) {
-    require_once 'pages/feed.php';
+    switch($root) {
+        case 'account':
+            require_once 'pages/account.php';
+            break;
+        default:
+            require_once 'pages/feed.php';
+    }
 } else {
     require_once 'pages/home.php';
 }

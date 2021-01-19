@@ -30,7 +30,9 @@
 <body>
 <div id="header">
     <?php if($_SESSION['user_id']) { ?>
-    <div class="float-right btn btn-danger" id="signout">Sign Out</div>
+    <div class="float-right btn btn-danger" id="signout">Sign Out <?php echo $_SESSION['username']; ?></div>
+        <div class="float-right btn btn-danger" style="margin-right: 1.0em;" id="my_feed">My Feed</div>
+        <div class="float-right btn btn-danger" style="margin-right: 1.0em;" id="my_account">My Account</div>
     <?php } ?>
     <span class="title"><img src="/android-chrome-144x144.png" style="width: 50px; margin-right: 0.5em;" alt="fancy cat" title="fancy cat" />PompousRumpus.com</span>
 </div>

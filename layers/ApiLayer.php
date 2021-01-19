@@ -21,6 +21,18 @@ class ApiLayer
         $this->api_version = $server->{'x-dsn-version'} ?? 'pompousrumpus';
         $res['error'] = '';
         switch ($endpoint) {
+            case 'change_guid':
+                $res['error'] = $this->ChangeGUID($_SESSION['user_id'] ?? nul);
+                break;
+
+            case 'change_username':
+                $res['error'] = $this->ChangeUsername($_SESSION['user_id'] ?? null, $request->username ?? null);
+                break;
+
+            case 'change_password':
+                $res['error'] = $this->ChangePassword($_SESSION['user_id'] ?? null, $request->password ?? null);
+                break;
+
             case 'delete_comment':
                 $this->DeleteComment($_SESSION['user_id'] ?? null, $request->response_guid ?? null);
                 break;
@@ -90,6 +102,9 @@ class ApiLayer
             case 'register':
                 $t = $this->CreateUser($request->username ?? null, $request->password ?? null);
                 switch ($t) {
+                    case -2:
+                        $res['error'] = 'This server is not accepting new users at this time.';
+                        break;
                     case -1:
                     case 1:
                     case 2:
@@ -117,6 +132,10 @@ class ApiLayer
 
     public function CreateUser($username, $password)
     {
+        if(defined('ALLOW_REGISTRATIONS') && !ALLOW_REGISTRATIONS) {
+            return -2;
+        }
+
         if (!$username || !$password || $password !== KeyboardOnly($password)) {
             return -1;
         }
@@ -342,6 +361,36 @@ class ApiLayer
             $this->dataLayer->AddFriend($user_id, $my_guid, $remote_guid, $remote_domain, false);
         }
         return null;
+    }
+
+    public function ChangePassword($user_id, $password)
+    {
+        if(!$user_id) {
+            return null;
+        }
+        if(!$password) {
+            return 'You must enter a password';
+        }
+        return $this->dataLayer->ChangePassword($user_id, $password);
+    }
+
+    public function ChangeGUID($user_id)
+    {
+        if(!$user_id) {
+            return null;
+        }
+        return $this->dataLayer->ChangeGUID($user_id);
+    }
+
+    public function ChangeUsername($user_id, $username)
+    {
+        if(!$user_id) {
+            return null;
+        }
+        if(!$username) {
+            return 'You must enter a username';
+        }
+        return $this->dataLayer->ChangeUsername($user_id, $username);
     }
 
     public function GetFeed($user_id)

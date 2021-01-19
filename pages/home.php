@@ -21,6 +21,7 @@
         <button class="btn btn-primary" id="login_account">Sign In</button>
     </div>
     <div class="col-6">
+        <?php if(!defined('ALLOW_REGISTRATIONS') || ALLOW_REGISTRATIONS) { ?>
         <h3>Create Account</h3>
         <label>Username: (<i>Note: Do not use an email address as a username!)
             <input class="form-control" type="text" id="create_username"/>
@@ -32,6 +33,7 @@
             <input class="form-control" type="password" id="create_password_confirm"/>
         </label><br/>
         <button class="btn btn-primary" id="create_account">Create Account</button>
+        <?php } ?>
     </div>
 
 </div>
