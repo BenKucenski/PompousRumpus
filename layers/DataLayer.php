@@ -289,7 +289,7 @@ class DataLayer
         $friends = [];
         $res = $this->Query($sql, ['user_id' => $user_id]);
         foreach ($res['data'] as $row) {
-            $is_self = strcasecmp($row['remote_domain'], $_SERVER['HTTP_HOST']) == 0;
+            $is_self = strcasecmp($row['remote_domain'], HTTP_HOST) == 0;
             if ($is_self) {
                 $b = $this->GetFriend($row['remote_guid'], $row['user_guid'], $row['remote_domain']);
                 $friends[] = [
@@ -302,7 +302,7 @@ class DataLayer
                 $c = Curl::Post('https://' . $row['remote_domain'] . '/api/friend', [
                     'user_guid' => $row['remote_guid'],
                     'remote_guid' => $row['user_guid'],
-                    'remote_domain' => $_SERVER['HTTP_HOST'],
+                    'remote_domain' => HTTP_HOST,
                 ]);
                 $b = json_decode($c->Body);
                 $friends[] = [
@@ -328,7 +328,7 @@ class DataLayer
         $sql = 'SELECT user_guid, is_sticky FROM friend_request WHERE completed_at IS NULL AND user_id = {{user_id}} ORDER BY created_at ASC';
         $res = $this->Query($sql, ['user_id' => $user_id], function ($row) {
             return [
-                'key' => $row['user_guid'] . ':' . $_SERVER['HTTP_HOST'],
+                'key' => $row['user_guid'] . ':' . HTTP_HOST,
                 'is_sticky' => $row['is_sticky'],
                 'user_guid' => $row['user_guid'],
             ];
@@ -479,8 +479,8 @@ ORDER BY post.created_at DESC
                 $content['can_delete'] = 0;
             }
             $content['post_guid'] = $row['post_guid'];
-            $content['post_domain'] = $_SERVER['HTTP_HOST'];
-            $content['post_hash'] = md5($row['post_guid'] . '@' . $_SERVER['HTTP_HOST']);
+            $content['post_domain'] = HTTP_HOST;
+            $content['post_hash'] = md5($row['post_guid'] . '@' . HTTP_HOST);
             $content['created_at'] = Timestamp(strtotime($row['created_at']) + $_SESSION['hour_offset'] * 3600);
             $content['author'] = $you ? '<i>You</i>' : $row['author'] . '@' . $remote_domain;
             return $content;
@@ -495,13 +495,13 @@ ORDER BY post.created_at DESC
         $sql = 'SELECT remote_guid, remote_domain, user_guid, user_id FROM friend_list WHERE user_id = {{user_id}}';
         $res = $this->Query($sql, ['user_id' => $user_id]);
         foreach ($res['data'] as $row) {
-            $is_self = strcasecmp($row['remote_domain'], $_SERVER['HTTP_HOST']) == 0;
+            $is_self = strcasecmp($row['remote_domain'], HTTP_HOST) == 0;
             if ($is_self) {
                 $sql = 'SELECT user_id FROM friend_list WHERE remote_guid = {{remote_guid}} AND remote_domain = {{remote_domain}}';
                 $res = $this->Query($sql, ['remote_guid' => $row['user_guid'], 'remote_domain' => $row['remote_domain']]);
                 $remote_user_id = $res['data'][0]['user_id'] ?? null;
                 if ($remote_user_id) {
-                    $this->LogIpAccess($row['remote_guid'], $row['user_guid'], $_SERVER['HTTP_HOST']);
+                    $this->LogIpAccess($row['remote_guid'], $row['user_guid'], HTTP_HOST);
                     $b = $this->GetYourFeed($remote_user_id, false, $row['remote_domain']);
                     $friend_feeds[] = json_decode(json_encode($b));
                 }
@@ -509,7 +509,7 @@ ORDER BY post.created_at DESC
                 $c = Curl::Get('https://' . $row['remote_domain'] . '/api/friend_feed', [
                     'user_guid' => $row['remote_guid'],
                     'remote_guid' => $row['user_guid'],
-                    'remote_domain' => $_SERVER['HTTP_HOST'],
+                    'remote_domain' => HTTP_HOST,
                 ]);
                 $b = json_decode($c->Body);
                 if ($b) {
@@ -680,8 +680,8 @@ ORDER BY post.created_at DESC
             'post_domain' => $post_domain,
             'post_guid' => $post_guid,
             'content' => $comment,
-            'user_at_domain' => $_SESSION['username'] . '@' . $_SERVER['HTTP_HOST'],
-            'remote_hash' => md5($_SESSION['user_id'] . '@' . $_SERVER['HTTP_HOST']),
+            'user_at_domain' => $_SESSION['username'] . '@' . HTTP_HOST,
+            'remote_hash' => md5($_SESSION['user_id'] . '@' . HTTP_HOST),
             'created_at' => Timestamp(),
         ]);
         return null;
@@ -694,7 +694,7 @@ ORDER BY post.created_at DESC
         if ($user_id) {
             // remote comments from friend's servers
             $sql = 'SELECT DISTINCT remote_domain FROM friend_list WHERE user_id {{user_id}} AND remote_domain <> {{remote_domain}}';
-            $res = $this->Query($sql, ['user_id' => $user_id, 'remote_domain' => $_SERVER['HTTP_HOST']]);
+            $res = $this->Query($sql, ['user_id' => $user_id, 'remote_domain' => HTTP_HOST]);
             if(sizeof($res['data'])) {
                 foreach($res['data'] as $row) {
                     $comments = Curl::Post('https://' . $row['remote_domain'] . '/post_comments', [

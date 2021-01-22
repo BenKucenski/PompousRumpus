@@ -347,12 +347,12 @@ class ApiLayer
 
         $my_guid = GUID();
 
-        $scheme = strcasecmp($remote_domain, $_SERVER['HTTP_HOST']) == 0 ? 'http://' : 'https://';
+        $scheme = strcasecmp($remote_domain, HTTP_HOST) == 0 ? 'http://' : 'https://';
 
         $res = Curl::Post($scheme . $remote_domain . '/api/handshake', [
             'guid' => $guid,
             'my_guid' => $my_guid,
-            'my_host' => $_SERVER['HTTP_HOST'],
+            'my_host' => HTTP_HOST,
         ]);
 
         $json = json_decode($res->Body);
