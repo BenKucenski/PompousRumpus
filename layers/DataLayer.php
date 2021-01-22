@@ -473,7 +473,7 @@ ORDER BY post.created_at DESC
     LIMIT ' . POST_NUMBER_LIMIT;
         $res = $this->Query($sql, ['user_id' => $user_id], function ($row) use ($you, $remote_domain, $user_id) {
             $content = json_decode($row['content'], true);
-            if($_SESSION['user_id'] == $user_id) {
+            if(($_SESSION['user_id'] ?? null) == $user_id) {
                 $content['can_delete'] = 1;
             } else {
                 $content['can_delete'] = 0;
@@ -511,6 +511,8 @@ ORDER BY post.created_at DESC
                     'remote_guid' => $row['user_guid'],
                     'remote_domain' => HTTP_HOST,
                 ]);
+                print_r($c);
+                exit;
                 $b = json_decode($c->Body);
                 if ($b) {
                     foreach($b->data as $i => $item) {
