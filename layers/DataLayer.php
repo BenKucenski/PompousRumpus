@@ -448,7 +448,7 @@ SET
         if (!$user_id) {
             return null;
         }
-        return $this->GetYourFeed($user_id, false, $remote_domain);
+        return $this->GetYourFeed($user_id, false);
     }
 
     /**
@@ -456,7 +456,7 @@ SET
      * @param bool $you
      * @return array|string[]
      */
-    public function GetYourFeed($user_id, $you = true, $remote_domain = null)
+    public function GetYourFeed($user_id, $you = true)
     {
         // your posts
         $sql = '
@@ -464,6 +464,7 @@ SELECT
        post.post_guid,
        post.content,
        post.created_at,
+       post.post_domain,
        user.username AS author
 FROM post 
     INNER JOIN user ON user.user_id = post.user_id 
@@ -471,7 +472,7 @@ WHERE post.user_id = {{user_id}}
 AND post.created_at >= NOW() - INTERVAL ' . POST_DAYS_LIMIT . ' DAY
 ORDER BY post.created_at DESC
     LIMIT ' . POST_NUMBER_LIMIT;
-        $res = $this->Query($sql, ['user_id' => $user_id], function ($row) use ($you, $remote_domain, $user_id) {
+        $res = $this->Query($sql, ['user_id' => $user_id], function ($row) use ($you, $user_id) {
             $content = json_decode($row['content'], true);
             if(($_SESSION['user_id'] ?? null) == $user_id) {
                 $content['can_delete'] = 1;
@@ -479,10 +480,10 @@ ORDER BY post.created_at DESC
                 $content['can_delete'] = 0;
             }
             $content['post_guid'] = $row['post_guid'];
-            $content['post_domain'] = HTTP_HOST;
+            $content['post_domain'] = $row['post_domain'];
             $content['post_hash'] = md5($row['post_guid'] . '@' . HTTP_HOST);
             $content['created_at'] = Timestamp(strtotime($row['created_at']) + ($_SESSION['hour_offset'] ?? 0) * 3600);
-            $content['author'] = $you ? '<i>You</i>' : $row['author'] . '@' . $remote_domain;
+            $content['author'] = $you ? '<i>You</i>' : $row['author'] . '@' . $row['post_domain'];
             return $content;
         });
         return $res;
