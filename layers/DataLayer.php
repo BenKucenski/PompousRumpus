@@ -141,7 +141,7 @@ class DataLayer
             SELECT
                 user_id
             FROM
-                user 
+                user
             WHERE username = {{username}}
                 AND user_id <> {{user_id}}
         ';
@@ -155,8 +155,8 @@ class DataLayer
 
         $sql = '
             UPDATE
-                user 
-            SET 
+                user
+            SET
                 username = {{username}}
             WHERE
                 user_id = {{user_id}}
@@ -176,8 +176,8 @@ class DataLayer
     {
         $sql = '
             UPDATE
-                user 
-            SET 
+                user
+            SET
                 password = {{password}}
             WHERE
                 user_id = {{user_id}}
@@ -196,8 +196,8 @@ class DataLayer
     {
         $sql = '
             UPDATE
-                user 
-            SET 
+                user
+            SET
                 guid = {{guid}}
             WHERE
                 user_id = {{user_id}}
@@ -226,7 +226,7 @@ class DataLayer
             SELECT
                 user_id
             FROM
-                user 
+                user
             WHERE username = {{username}}
         ';
         $res = $this->Query($sql, ['username' => $username]);
@@ -236,8 +236,8 @@ class DataLayer
 
         $sql = '
             INSERT INTO
-                user 
-            SET 
+                user
+            SET
                 username = {{username}},
                 password = {{password}},
                 guid = {{guid}},
@@ -267,8 +267,8 @@ class DataLayer
                 user_id,
                guid
             FROM
-                user 
-            WHERE 
+                user
+            WHERE
                 username = {{username}}
                 AND password = {{password}}
         ';
@@ -371,12 +371,12 @@ class DataLayer
         $remote_addr = $_SERVER['REMOTE_ADDR'];
 
         $sql = '
-SELECT 
-    ip_access_id, 
-       user_guid, 
-       is_blocked 
-FROM ip_access 
-WHERE 
+SELECT
+    ip_access_id,
+       user_guid,
+       is_blocked
+FROM ip_access
+WHERE
     user_guid = {{user_guid}}
     AND remote_guid = {{remote_guid}}
     AND remote_domain = {{remote_domain}}
@@ -407,7 +407,7 @@ WHERE
 
         } else {
             $sql = '
-INSERT INTO 
+INSERT INTO
     ip_access
 SET
     user_guid = {{user_guid}},
@@ -460,13 +460,13 @@ SET
     {
         // your posts
         $sql = '
-SELECT 
+SELECT
        post.post_guid,
        post.content,
        post.created_at,
        user.username AS author
-FROM post 
-    INNER JOIN user ON user.user_id = post.user_id 
+FROM post
+    INNER JOIN user ON user.user_id = post.user_id
 WHERE post.user_id = {{user_id}}
 AND post.created_at >= NOW() - INTERVAL ' . POST_DAYS_LIMIT . ' DAY
 ORDER BY post.created_at DESC
@@ -511,8 +511,6 @@ ORDER BY post.created_at DESC
                     'remote_guid' => $row['user_guid'],
                     'remote_domain' => HTTP_HOST,
                 ]);
-                print_r($c);
-                exit;
                 $b = json_decode($c->Body);
                 if ($b) {
                     foreach($b->data as $i => $item) {
@@ -599,7 +597,7 @@ ORDER BY post.created_at DESC
         SELECT
             user.username
         FROM
-            friend_list 
+            friend_list
         INNER JOIN
             user ON user.user_id = friend_list.user_id
 
