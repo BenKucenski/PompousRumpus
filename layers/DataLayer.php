@@ -511,8 +511,6 @@ ORDER BY post.created_at DESC
                     'remote_guid' => $row['user_guid'],
                     'remote_domain' => HTTP_HOST,
                 ]);
-                print_r($c);
-                exit;
                 $b = json_decode($c->Body);
                 if ($b) {
                     foreach($b->data as $i => $item) {
