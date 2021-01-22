@@ -481,7 +481,7 @@ ORDER BY post.created_at DESC
             $content['post_guid'] = $row['post_guid'];
             $content['post_domain'] = HTTP_HOST;
             $content['post_hash'] = md5($row['post_guid'] . '@' . HTTP_HOST);
-            $content['created_at'] = Timestamp(strtotime($row['created_at']) + $_SESSION['hour_offset'] * 3600);
+            $content['created_at'] = Timestamp(strtotime($row['created_at']) + ($_SESSION['hour_offset'] ?? 0) * 3600);
             $content['author'] = $you ? '<i>You</i>' : $row['author'] . '@' . $remote_domain;
             return $content;
         });
@@ -514,7 +514,7 @@ ORDER BY post.created_at DESC
                 $b = json_decode($c->Body);
                 if ($b) {
                     foreach($b->data as $i => $item) {
-                        $b->data[$i]->created_at = Timestamp(strtotime($item->created_at) + $_SESSION['hour_offset'] * 3600);
+                        $b->data[$i]->created_at = Timestamp(strtotime($item->created_at) + ($_SESSION['hour_offset'] ?? 0) * 3600);
                     }
                     $friend_feeds[] = $b->data;
                 }
@@ -675,7 +675,7 @@ ORDER BY post.created_at DESC
         created_at = {{created_at}}
         ';
         $this->Execute($sql, [
-            'user_id' => $_SESSION['user_id'],
+            'user_id' => $_SESSION['user_id'] ?? null,
             'response_guid' => GUID(),
             'post_domain' => $post_domain,
             'post_guid' => $post_guid,
@@ -704,7 +704,7 @@ ORDER BY post.created_at DESC
                     if($comments->Body) {
                         $cs = json_decode($comments->Body, true);
                         foreach($cs as $item) {
-                            $item['created_at'] = Timestamp(strtotime($item['created_at']) + $_SESSION['hour_offset'] * 3600);
+                            $item['created_at'] = Timestamp(strtotime($item['created_at']) + ($_SESSION['hour_offset'] ?? 0) * 3600);
                             $item['content'] = strip_tags($item['content']);
                             $list[] = $item;
                         }
@@ -724,7 +724,7 @@ ORDER BY post.created_at DESC
                 $item['can_delete'] = 0;
             }
             unset($item['user_id']);
-            $item['created_at'] = Timestamp(strtotime($item['created_at']) + $_SESSION['hour_offset'] * 3600);
+            $item['created_at'] = Timestamp(strtotime($item['created_at']) + ($_SESSION['hour_offset'] ?? 0) * 3600);
             $item['content'] = strip_tags($item['content']);
             $list[] = $item;
         }
