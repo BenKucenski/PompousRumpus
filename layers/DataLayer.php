@@ -693,17 +693,26 @@ ORDER BY post.created_at DESC
 
         if ($user_id) {
             // remote comments from friend's servers
-            $sql = 'SELECT DISTINCT remote_domain FROM friend_list WHERE user_id {{user_id}} AND remote_domain <> {{remote_domain}}';
+            $sql = 'SELECT DISTINCT remote_domain FROM friend_list WHERE user_id = {{user_id}} AND remote_domain <> {{remote_domain}}';
             $res = $this->Query($sql, ['user_id' => $user_id, 'remote_domain' => HTTP_HOST]);
             if(sizeof($res['data'])) {
                 foreach($res['data'] as $row) {
-                    $comments = Curl::Post('https://' . $row['remote_domain'] . '/post_comments', [
+                    $comments = Curl::Post('https://' . $row['remote_domain'] . '/api/get_comments', [
                         'post_guid' => $post_guid,
-                        'post_domain' => $post_domain,
+                        'post_domain' => $row['remote_domain'],
                     ]);
                     if($comments->Body) {
                         $cs = json_decode($comments->Body, true);
-                        foreach($cs as $item) {
+                        if(!isset($cs['data'])) {
+                            continue;
+                        }
+                        if(!is_array($cs['data'])) {
+                            continue;
+                        }
+                        if(!sizeof($cs['data'])) {
+                            continue;
+                        }
+                        foreach($cs['data'] as $item) {
                             $item['created_at'] = Timestamp(strtotime($item['created_at']) + ($_SESSION['hour_offset'] ?? 0) * 3600);
                             $item['content'] = strip_tags($item['content']);
                             $list[] = $item;
