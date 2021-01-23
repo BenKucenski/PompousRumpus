@@ -699,7 +699,7 @@ ORDER BY post.created_at DESC
                 foreach($res['data'] as $row) {
                     $comments = Curl::Post('https://' . $row['remote_domain'] . '/api/get_comments', [
                         'post_guid' => $post_guid,
-                        'post_domain' => $row['remote_domain'],
+                        'post_domain' => $post_domain,
                     ]);
                     if($comments->Body) {
                         $cs = json_decode($comments->Body, true);
