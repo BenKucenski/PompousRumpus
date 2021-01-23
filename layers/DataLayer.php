@@ -695,12 +695,14 @@ ORDER BY post.created_at DESC
             // remote comments from friend's servers
             $sql = 'SELECT DISTINCT remote_domain FROM friend_list WHERE user_id = {{user_id}} AND remote_domain <> {{remote_domain}}';
             $res = $this->Query($sql, ['user_id' => $user_id, 'remote_domain' => HTTP_HOST]);
+
             if(sizeof($res['data'])) {
                 foreach($res['data'] as $row) {
                     $comments = Curl::Post('https://' . $row['remote_domain'] . '/api/get_comments', [
                         'post_guid' => $post_guid,
                         'post_domain' => $post_domain,
                     ]);
+
                     if($comments->Body) {
                         $cs = json_decode($comments->Body, true);
                         if(!isset($cs['data'])) {
@@ -727,7 +729,7 @@ ORDER BY post.created_at DESC
         $res = $this->Query($sql, ['post_guid' => $post_guid, 'post_domain' => $post_domain]);
 
         foreach($res['data'] as $item) {
-            if($item['user_id'] == $_SESSION['user_id']) {
+            if($user_id == $item['user_id']) {
                 $item['can_delete'] = 1;
             } else {
                 $item['can_delete'] = 0;
